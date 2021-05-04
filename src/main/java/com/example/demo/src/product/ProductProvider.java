@@ -33,9 +33,13 @@ public class ProductProvider {
         this.jwtService = jwtService;
     }
 
-    public GetProductRes getProduct(int productIdx) {
-        GetProductRes getProductRes = productDao.getProduct(productIdx);
+    public GetProductRes getProduct(Integer userIdx, int productIdx) {
+        GetProductRes getProductRes = productDao.getProduct(userIdx, productIdx);
         return getProductRes;
+    }
+
+    public Integer wishCheck(Integer userIdx, int productIdx) {
+        return productDao.wishCheck(userIdx, productIdx);
     }
 
 }
