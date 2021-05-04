@@ -7,7 +7,7 @@ spring:
 
   datasource:
     platform: mysql
-    url: jdbc:mysql://forclass.c8ydsrovkrwj.ap-northeast-2.rds.amazonaws.com/test?autoReconnect=true # 변경해주세요
-    username: test # 변경해주세요
-    password: test # 변경해주세요
+    url: jdbc:mysql://database-1.ceqjibdtgebn.ap-northeast-2.rds.amazonaws.com/NamuDB_dev?autoReconnect=true # 변경해주세요
+    username: admin # 변경해주세요
+    password: newpassword # 변경해주세요
     driver-class-name: com.mysql.cj.jdbc.Driver
