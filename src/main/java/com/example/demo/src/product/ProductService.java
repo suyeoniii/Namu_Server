@@ -1,6 +1,7 @@
 package com.example.demo.src.product;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.config.BaseResponse;
 import com.example.demo.config.secret.Secret;
 import com.example.demo.src.product.model.*;
 import com.example.demo.utils.AES128;
@@ -38,6 +39,7 @@ public class ProductService {
 
     }
 
+    //찜 등록,해제
     public WishProductRes wishProduct(Integer userIdx, int productIdx) {
         Integer status = productProvider.wishCheck(userIdx, productIdx);
 
@@ -49,5 +51,19 @@ public class ProductService {
             else status = 1;
             return productDao.updateWish(userIdx, productIdx, status);
         }
+    }
+
+    //물품 신청
+    public ApplyProductRes applyProduct(Integer userIdx, int productIdx, int quantity) throws BaseException {
+        int productRes = productProvider.productCheck(productIdx);
+        int applyRes = productProvider.applyCheck(userIdx, productIdx);
+
+        if(productRes == 0){
+            throw new BaseException(PRODUCT_NOT_EXIST);
+        }
+        if(applyRes == 0){
+            return productDao.applyProduct(userIdx, productIdx, quantity);
+        }
+        return productDao.updateApplyProduct(userIdx, productIdx, quantity);
     }
 }

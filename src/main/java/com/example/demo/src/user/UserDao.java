@@ -19,6 +19,23 @@ public class UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    public List<GetUserApplyRes> getUserApply(int userIdx){
+        String getUsersQuery = "SELECT P.idx productIdx, imgUrl, productName, price, A.quantity, P.quantity totalCount, applyCount FROM Product P\n" +
+                "INNER JOIN Apply A ON A.productIdx=P.idx\n" +
+                "INNER JOIN (SELECT productIdx, SUM(quantity) applyCount FROM Apply WHERE status=0 GROUP BY productIdx) AP ON AP.productIdx=P.idx\n" +
+                "WHERE A.userIdx=?";
+        return this.jdbcTemplate.query(getUsersQuery,
+                (rs,rowNum) -> new GetUserApplyRes(
+                        rs.getInt("productIdx"),
+                        rs.getString("imgUrl"),
+                        rs.getString("productName"),
+                        rs.getInt("price"),
+                        rs.getInt("quantity"),
+                        rs.getInt("totalCount"),
+                        rs.getInt("applyCount")), userIdx
+        );
+    }
+
     public List<GetUserRes> getUsers(){
         String getUsersQuery = "select * from UserInfo";
         return this.jdbcTemplate.query(getUsersQuery,
@@ -77,8 +94,8 @@ public class UserDao {
     }
 
     public int modifyUserName(PatchUserReq patchUserReq){
-        String modifyUserNameQuery = "update UserInfo set userName = ? where userIdx = ? ";
-        Object[] modifyUserNameParams = new Object[]{patchUserReq.getUserName(), patchUserReq.getUserIdx()};
+        String modifyUserNameQuery = "update User set nickname = ? where userIdx = ? ";
+        Object[] modifyUserNameParams = new Object[]{patchUserReq.getNickName(), patchUserReq.getUserIdx()};
 
         return this.jdbcTemplate.update(modifyUserNameQuery,modifyUserNameParams);
     }

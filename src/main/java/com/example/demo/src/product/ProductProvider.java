@@ -33,13 +33,25 @@ public class ProductProvider {
         this.jwtService = jwtService;
     }
 
+
+    //물품 상세 조회
     public GetProductRes getProduct(Integer userIdx, int productIdx) {
-        GetProductRes getProductRes = productDao.getProduct(userIdx, productIdx);
-        return getProductRes;
+        return productDao.getProduct(userIdx, productIdx);
     }
 
+    //물품 체크
+    public Integer productCheck(int productIdx) {
+        return productDao.productCheck(productIdx);
+    }
+
+    //찜 체크
     public Integer wishCheck(Integer userIdx, int productIdx) {
         return productDao.wishCheck(userIdx, productIdx);
+    }
+
+    //신청여부 체크
+    public Integer applyCheck(Integer userIdx, int productIdx) {
+        return productDao.applyCheck(userIdx, productIdx);
     }
 
 }

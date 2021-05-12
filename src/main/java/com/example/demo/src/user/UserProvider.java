@@ -31,6 +31,17 @@ public class UserProvider {
         this.jwtService = jwtService;
     }
 
+    //신청물품 조회
+    public List<GetUserApplyRes> getUserApply(int userIdx) throws BaseException{
+        try{
+            List<GetUserApplyRes> getUserApplyRes = userDao.getUserApply(userIdx);
+            return getUserApplyRes;
+        }
+        catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     public List<GetUserRes> getUsers() throws BaseException{
         try{
             List<GetUserRes> getUserRes = userDao.getUsers();

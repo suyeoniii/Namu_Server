@@ -28,12 +28,38 @@ public class UserController {
     private final JwtService jwtService;
 
 
-
-
     public UserController(UserProvider userProvider, UserService userService, JwtService jwtService){
         this.userProvider = userProvider;
         this.userService = userService;
         this.jwtService = jwtService;
+    }
+
+    /**
+     * 신청물품 조회
+     * [GET] /users/:userIdx/apply
+     * 사용자 신청물품 조회
+     * @return BaseResponse<List<GetUserApplyRes>>
+     */
+    //Path variable
+    @ResponseBody
+    @GetMapping("/{userIdx}/apply") // (GET) 127.0.0.1:9000/app/users
+    public BaseResponse<List<GetUserApplyRes>> getUserApply(@PathVariable("userIdx") int userIdx) {
+        try{
+            if(userIdx == 0){
+                return new BaseResponse<>(USER_USERID_EMPTY);
+            }
+            //jwt에서 idx 추출.
+            int userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if(userIdx != userIdxByJwt){
+                return new BaseResponse<>(USER_USERID_NOT_MATCH);
+            }
+            // Get User Apply
+            List<GetUserApplyRes> getUsersRes = userProvider.getUserApply(userIdx);
+            return new BaseResponse<>(getUsersRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
     }
 
     /**
@@ -137,7 +163,7 @@ public class UserController {
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
             //같다면 유저네임 변경
-            PatchUserReq patchUserReq = new PatchUserReq(userIdx,user.getUserName());
+            PatchUserReq patchUserReq = new PatchUserReq(userIdx,user.getNickname());
             userService.modifyUserName(patchUserReq);
 
             String result = "";

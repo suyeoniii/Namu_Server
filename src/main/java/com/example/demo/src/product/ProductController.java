@@ -4,13 +4,13 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.product.ProductProvider;
 import com.example.demo.src.product.ProductService;
-import com.example.demo.src.product.model.GetProductRes;
-import com.example.demo.src.product.model.PostProductReq;
-import com.example.demo.src.product.model.PostProductRes;
-import com.example.demo.src.product.model.WishProductRes;
+import com.example.demo.src.product.model.*;
 import com.example.demo.src.user.model.GetUserRes;
 import com.example.demo.src.user.model.PatchUserReq;
+import com.example.demo.src.user.model.PostUserReq;
 import com.example.demo.utils.JwtService;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +61,30 @@ public class ProductController {
             return new BaseResponse<>((exception.getStatus()));
         }
 
+    }
+
+    /**
+     * 신청 등록 API
+     * [POST] /products/:productIdx
+     *
+     * @return BaseResponse<List <ApplyProductRes>>
+     */
+    // Path-variable
+    @ResponseBody
+    @PostMapping("/{productIdx}") // (POST) 127.0.0.1:9000/app/products/:productIdx
+    public BaseResponse<ApplyProductRes> applyProduct(@PathVariable("productIdx") int productIdx, @RequestBody ApplyProductReq applyProductReq) {
+        try {
+            //quantity 빈 값 체크
+            if(applyProductReq.getQuantity()==0)
+                return new BaseResponse<>(PRODUCT_QUANTITY_EMPTY);
+
+            Integer userIdxByJwt = jwtService.getUserIdx();
+
+            ApplyProductRes applyProductRes = productService.applyProduct(userIdxByJwt, productIdx, applyProductReq.getQuantity());
+            return new BaseResponse<>(applyProductRes) ;
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
     }
 
     /**

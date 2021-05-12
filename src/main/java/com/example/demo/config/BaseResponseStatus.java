@@ -16,11 +16,44 @@ public enum BaseResponseStatus {
     /**
      * 2000 : Request 오류
      */
+
     // Common
     REQUEST_ERROR(false, 2000, "입력값을 확인해주세요."),
-    EMPTY_JWT(false, 2001, "JWT를 입력해주세요."),
-    INVALID_JWT(false, 2002, "유효하지 않은 JWT입니다."),
-    INVALID_USER_JWT(false,2003,"권한이 없는 유저의 접근입니다."),
+    EMPTY_JWT(false, 2000, "JWT를 입력해주세요."),
+    INVALID_JWT(false, 3000, "유효하지 않은 JWT입니다."),
+    INVALID_USER_JWT(false,2000,"권한이 없는 유저의 접근입니다."),
+
+    //new
+    LATITUDE_EMPTY(false, 2001, "위도를 입력해주세요"),
+    LONGITUDE_EMPTY(false, 2002, "경도를 입력해주세요"),
+    TYPE_ERROR_TYPE(false, 2003, "type은 0~2값을 입력해주세요"),
+    DISTANCE_ERROR_TYPE(false, 2004, "거리범위를 확인해주세요"),
+    TYPE_EMPTY(false, 2005, "타입을 입력해주세요"),
+    QUANTITY_ERROR_TYPE(false, 2006, "수량을 1개 이상 입력해주세요"),
+    PRODUCT_NAME_EMPTY(false, 2007, "물품 이름을 입력해주세요"),
+    PRODUCT_PRICE_EMPTY(false, 2008, "가격을 입력해주세요"),
+    PRODUCT_IMAGE_ERROR_TYPE(false, 2009, "이미지 형식을 확인해주세요"),
+    PRODUCT_CATEGORY_EMPTY(false, 2010,  "카테고리를 입력해주세요"),
+    PRODUCT_DESCRIPTION_LENGTH(false, 2011, "설명은 최대 500자를 넘길 수 없습니다"),
+    PRODUCT_DEADLINE_EMPTY(false, 2012, "마감일을 입력해주세요"),
+    PRODUCT_LOCATION_EMPTY(false, 2013, "위치를 입력해주세요"),
+    PRODUCT_LATITUDE_EMPTY(false, 2014, "위도를 입력해주세요"),
+    PRODUCT_LONGITUDE_EMPTY(false, 2015, "경도를 입력해주세요"),
+
+
+    USER_USERID_EMPTY(false, 2016, "userIdx를 입력해주세요"),
+    USER_USERID_NOT_MATCH(false, 2017, "userIdx가 일치하지 않습니다"),
+    PRODUCT_ID_EMPTY(false, 2018, "productIdx를 입력해주세요"),
+    PRODUCT_NAME_LENGTH(false, 2019, "물품이름은 최대 50자를 넘길 수 없습니다"),
+    PRODUCT_DEADLINE_OVER(false, 2020, "마감일은 1일 이상으로 설정가능합니다"),
+    PRODUCT_DEADLINE_ERROR_TYPE(false, 2021, "마감일 형식이 올바르지 않습니다"),
+    PRODUCT_DATE_ERROR_TYPE(false, 2022, "date는 요일만 입력가능합니다"),
+    SEARCH_QUERY_EMPTY(false, 2023, "검색어를 입력해주세요"),
+    PRODUCT_NOT_EXIST(false, 2024, "존재하지 않는 물품입니다"),
+
+
+    //
+    PRODUCT_QUANTITY_EMPTY(false, 2004, "수량을 입력해주세요"),
 
     // users
     USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),
