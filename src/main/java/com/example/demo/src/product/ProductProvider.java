@@ -45,7 +45,7 @@ public class ProductProvider {
     }
 
     //찜 체크
-    public Integer wishCheck(Integer userIdx, int productIdx) {
+    public WishProductCheck wishCheck(Integer userIdx, int productIdx) {
         return productDao.wishCheck(userIdx, productIdx);
     }
 

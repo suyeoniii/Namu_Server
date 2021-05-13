@@ -101,12 +101,6 @@ public class ProductDao {
         }
     }
 
-    public WishProductRes createWish(Integer userIdx, int productIdx){
-        Object[] wishProductParams = new Object[]{userIdx, productIdx};
-        String createWishQuery = "INSERT INTO Wish(userIdx, productIdx) VALUES(?, ?)";
-        this.jdbcTemplate.update(createWishQuery, wishProductParams);
-        return new WishProductRes(1);
-    }
     //물품 체크
     public int productCheck(int productIdx){
         String productQuery = "select exists(select idx from Product where idx=? and status=0);";
@@ -123,12 +117,13 @@ public class ProductDao {
                 applyProductParams);
     }
     //찜 체크
-    public Integer wishCheck(Integer userIdx, int productIdx){
+    public WishProductCheck wishCheck(Integer userIdx, int productIdx){
         Object[] wishProductParams = new Object[]{userIdx, productIdx};
-        String checkWishQuery = "select idx, status from Wish where userIdx=? and productIdx=?;";
-        return this.jdbcTemplate.queryForObject("select idx, status, count(case when status=0 then 1 end) count from Wish where userIdx=? and productIdx=?;",
-                (rs, rowNum) ->
-                        rs.getInt("status"),
+        String checkWishQuery = "select count(*) count, status from Wish where userIdx=? and productIdx=?;";
+        return this.jdbcTemplate.queryForObject(checkWishQuery,
+                (rs, rowNum) -> new WishProductCheck(
+                        rs.getInt("count"),
+                        rs.getInt("status")),
                 wishProductParams);
     }
     //신청 업데이트
@@ -138,11 +133,21 @@ public class ProductDao {
         this.jdbcTemplate.update(applyProductQuery, applyProductParams);
         return new ApplyProductRes(productIdx);
     }
+    //wish 등록
+    public WishProductRes createWish(Integer userIdx, int productIdx){
+        Object[] wishProductParams = new Object[]{userIdx, productIdx};
+        String createWishQuery = "INSERT INTO Wish(userIdx, productIdx) VALUES(?, ?)";
+        this.jdbcTemplate.update(createWishQuery, wishProductParams);
+        return new WishProductRes(1);
+    }
+    //wish 업데이트
     public WishProductRes updateWish(Integer userIdx, int productIdx, Integer status){
         Object[] wishProductParams = new Object[]{status, userIdx, productIdx};
         String createWishQuery = "UPDATE Wish SET status=? WHERE userIdx=? and productIdx=?;";
         this.jdbcTemplate.update(createWishQuery, wishProductParams);
-        return new WishProductRes(status);
+        int result = 0;
+        if(status==0) result = 1;
+        return new WishProductRes(result);
     }
     public ApplyProductRes applyProduct(Integer userIdx, int productIdx, int quantity){
         Object[] applyProductParams = new Object[]{userIdx, productIdx, quantity};

@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class WishProductReq {
-    private Integer userIdx;
-    private int productIdx;
+public class WishProductCheck {
+    private int count;
+    private int status;
 }

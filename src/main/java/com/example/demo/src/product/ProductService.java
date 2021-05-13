@@ -41,14 +41,13 @@ public class ProductService {
 
     //찜 등록,해제
     public WishProductRes wishProduct(Integer userIdx, int productIdx) {
-        Integer status = productProvider.wishCheck(userIdx, productIdx);
-
-        if(status == null){ //create
+        WishProductCheck wishRes = productProvider.wishCheck(userIdx, productIdx);
+        if(wishRes.getCount() == 0){ //create
             return productDao.createWish(userIdx, productIdx);
         }
         else{ //update
-            if (status == 1) status = 0;
-            else status = 1;
+            int status = 1;
+            if (wishRes.getStatus() == 1) status = 0;
             return productDao.updateWish(userIdx, productIdx, status);
         }
     }
