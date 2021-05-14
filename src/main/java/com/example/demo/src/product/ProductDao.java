@@ -19,6 +19,67 @@ public class ProductDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    //마감임박 물품 조회
+    public List<GetProductListRes> selectImminent(Integer userIdx, int page, int limit, String[] lati, String[] longi, int distance) {
+
+        int i = 0;
+            String selectImminentQuery = "select distinct P.idx, productName, FORMAT(price,0) price, imgUrl,\n" +
+                    "                    ifnull(view, 0) view , ifnull(wish, 0) wish";
+            if (userIdx != null) {
+                selectImminentQuery += ",ifnull(isWish, 0) isWish";
+            }
+            selectImminentQuery += ",CONCAT(CONCAT(ifnull(apply,0),'/'),quantity) apply, delay " +
+                    " from Product P " +
+                    " left outer join (select SUM(count) view, productIdx from Viewed group by productIdx) V on V.productIdx=idx " +
+                    " left outer join (select count(*) wish, productIdx";
+            if (userIdx != null) {
+                selectImminentQuery += " ,count(case when userIdx=" + userIdx + " then 1 else 0 end) isWish";
+            }
+            selectImminentQuery += " from Wish group by productIdx) W " +
+                    " on W.productIdx =idx " +
+                    " inner join (SELECT idx, Round((6371*acos(cos(radians(" +
+                    lati[i] +
+                    " ))*cos(radians(latitude))*cos(radians(longitude) -radians(" + longi[i] + "))+sin(radians(" + lati[i] + "))*sin(radians(latitude)))),2) " +
+                    " AS distance " +
+                    " FROM Product " +
+                    " Having distance <= " + distance + ") dis on dis.idx=P.idx " +
+                    " left outer join (select productIdx, count(*) apply from Apply group by productIdx) AP on AP.productIdx = P.idx " +
+                    " WHERE TIMESTAMPDIFF(DAY, deadline, current_timestamp()) >= -3 " +
+                    " AND deadline > current_timestamp()";
+            if (userIdx != null) {
+                selectImminentQuery += " AND P.userIdx != " + userIdx + "";
+            }
+            selectImminentQuery += " ORDER BY delay LIMIT " + page + "," + limit + ";";
+            System.out.println(selectImminentQuery);
+            if(userIdx!=null){
+                return this.jdbcTemplate.query(selectImminentQuery,
+                        (rs, rowNum) -> new GetProductListRes(
+                                rs.getInt("idx"),
+                                rs.getString("productName"),
+                                rs.getString("price"),
+                                rs.getString("imgUrl"),
+                                rs.getString("view"),
+                                rs.getInt("wish"),
+                                rs.getInt("isWish"),
+                                rs.getString("apply"),
+                                rs.getInt("delay")));
+            }
+            else{
+                return this.jdbcTemplate.query(selectImminentQuery,
+                        (rs, rowNum) -> new GetProductListRes(
+                                rs.getInt("idx"),
+                                rs.getString("productName"),
+                                rs.getString("price"),
+                                rs.getString("imgUrl"),
+                                rs.getString("view"),
+                                rs.getInt("wish"),
+                                0,
+                                rs.getString("apply"),
+                                rs.getInt("delay")));
+            }
+
+        }
+
     //상세조회
     public GetProductRes getProduct(Integer userIdx, int productIdx){
         Object[] getProductParams = new Object[]{userIdx, userIdx, productIdx, productIdx};
@@ -154,5 +215,17 @@ public class ProductDao {
         String applyProductQuery = "INSERT INTO Apply(userIdx,productIdx,quantity) VALUES(?, ?, ?)";
         this.jdbcTemplate.update(applyProductQuery, applyProductParams);
         return new ApplyProductRes(productIdx);
+    }
+    //사용자 주소 조회
+    public List<GetUserAddressRes> selectUSerAddress(Integer userIdx){
+        String selectUSerAddressQuery = "select count(*) count, status from Wish where userIdx=? and productIdx=?;";
+        return this.jdbcTemplate.query(selectUSerAddressQuery,
+                (rs, rowNum) -> new GetUserAddressRes(
+                        rs.getInt("addressIdx"),
+                        rs.getString("latitude"),
+                        rs.getString("longitude"),
+                        rs.getString("location"),
+                        rs.getInt("count")),
+                userIdx);
     }
 }

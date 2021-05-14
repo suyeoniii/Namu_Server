@@ -33,6 +33,13 @@ public class ProductProvider {
         this.jwtService = jwtService;
     }
 
+    //마감임박 조회
+    public List <GetProductListRes> getImminentProducts(Integer userIdx, int page, int limit, String[] lati, String[] longi, int distance) {
+        return productDao.selectImminent(userIdx, page, limit, lati, longi, distance);
+    }
+    //추천상품조회
+    //검색 조회
+
 
     //물품 상세 조회
     public GetProductRes getProduct(Integer userIdx, int productIdx) {
@@ -52,6 +59,11 @@ public class ProductProvider {
     //신청여부 체크
     public Integer applyCheck(Integer userIdx, int productIdx) {
         return productDao.applyCheck(userIdx, productIdx);
+    }
+
+    //신청여부 체크
+    public List<GetUserAddressRes> getUserAddress(Integer userIdx) {
+        return productDao.selectUSerAddress(userIdx);
     }
 
 }

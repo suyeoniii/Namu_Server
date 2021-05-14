@@ -2,15 +2,8 @@ package com.example.demo.src.product;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.product.ProductProvider;
-import com.example.demo.src.product.ProductService;
 import com.example.demo.src.product.model.*;
-import com.example.demo.src.user.model.GetUserRes;
-import com.example.demo.src.user.model.PatchUserReq;
-import com.example.demo.src.user.model.PostUserReq;
 import com.example.demo.utils.JwtService;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
-import static com.example.demo.utils.ValidationRegex.isRegexEmail;
 
 @RestController
 @RequestMapping("/app/products")
@@ -40,11 +32,74 @@ public class ProductController {
         this.jwtService = jwtService;
     }
 
+    /**
+     * 물품 조회 API (마감임박, 추천상품)
+     * [GET] /products
+     * @return BaseResponse<List <GetProductListRes>>
+     */
+    // Path-variable
+    @ResponseBody
+    @GetMapping("") // (GET) 127.0.0.1:9000/app/products/:productIdx
+    public BaseResponse<List<GetProductListRes>> getProductList(@RequestParam(required = true) int type,
+                                                                @RequestParam(required = false, defaultValue = "1") String page,
+                                                                @RequestParam(required = false, defaultValue = "20") String limit,
+                                                                @RequestParam(required = false) String[] lati,
+                                                                @RequestParam(required = false) String[] longi,
+                                                                @RequestParam(required = false, defaultValue = "0") String distance) {
+        // 마감임박
+        try {
+            //jwt에서 idx 추출.
+            Integer userIdx = jwtService.getUserIdxOrNot();
+
+            //로그인 시 사용자 위도경도 가져오기
+            if(userIdx != null){
+                List<GetUserAddressRes> addressRes = productProvider.getUserAddress(userIdx);
+            }
+            //페이징 기본값 설정
+            int start = Integer.parseInt(limit)*(Integer.parseInt(page)-1);
+
+            //distance 값 변환
+            int dis;
+            if(distance.equals("0")){
+                dis = 100;
+            }
+            else if(distance.equals("1")){
+                dis = 300;
+            }
+            else if(distance.equals("2")){
+                dis = 500;
+            }
+            else if(distance.equals("3")){
+                dis = 1;
+            }
+            else if(distance.equals("4")){
+                dis = 3;
+            }
+            else{
+                return new BaseResponse<>(DISTANCE_ERROR_TYPE);
+            }
+
+            if(type==0){ //마감임박 조회
+                List<GetProductListRes> getProductRes = productProvider.getImminentProducts(
+                        userIdx, start, Integer.parseInt(limit), lati, longi, dis);
+                return new BaseResponse<>(getProductRes);
+            }
+            else if(type==1){ //추천상품 조회
+                //List<GetProductListRes> getProductRes = productProvider.getRecommendProducts(
+                        //userIdxByJwt, page, limit, lati, longi, distance);
+                //return new BaseResponse<>(getProductRes);
+            }
+            return new BaseResponse<>(TYPE_EMPTY);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 
     /**
      * 물품 상세 조회 API
      * [GET] /products
-     * @return BaseResponse<List <GetProductRes>>
+     * @return BaseResponse<GetProductRes>
      */
     // Path-variable
     @ResponseBody
