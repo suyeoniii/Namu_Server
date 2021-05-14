@@ -50,7 +50,7 @@ public class ProductDao {
                 selectImminentQuery += " AND P.userIdx != " + userIdx + "";
             }
             selectImminentQuery += " ORDER BY delay LIMIT " + page + "," + limit + ";";
-            System.out.println(selectImminentQuery);
+
             if(userIdx!=null){
                 return this.jdbcTemplate.query(selectImminentQuery,
                         (rs, rowNum) -> new GetProductListRes(
@@ -79,6 +79,67 @@ public class ProductDao {
             }
 
         }
+
+    //추천상품
+    public List<GetProductListRes> selectRecommend(Integer userIdx, int page, int limit, String[] lati, String[] longi, int distance) {
+
+        int i = 0;
+        String selectRecommendQuery = "select distinct P.idx, productName, FORMAT(price,0) price, imgUrl,\n" +
+                "                    ifnull(view, 0) view , ifnull(wish, 0) wish";
+        if (userIdx != null) {
+            selectRecommendQuery += ",ifnull(isWish, 0) isWish";
+        }
+        selectRecommendQuery += ",CONCAT(CONCAT(ifnull(apply,0),'/'),quantity) apply, delay " +
+                " from Product P\n" +
+                "      inner join RecommendProduct RP on RP.productIdx = P.idx\n" +
+                "  left outer join (select SUM(count) view, productIdx from Viewed group by productIdx) V on V.productIdx=P.idx\n" +
+                "  left outer join (select count(*) wish, productIdx";
+        if (userIdx != null) {
+            selectRecommendQuery += " ,count(case when userIdx=" + userIdx + " then 1 else 0 end) isWish";
+        }
+        selectRecommendQuery += " from Wish group by productIdx) W " +
+                " on W.productIdx=P.idx " +
+                " inner join (SELECT idx, Round((6371*acos(cos(radians(" +
+                lati[i] +
+                " ))*cos(radians(latitude))*cos(radians(longitude) -radians(" + longi[i] + "))+sin(radians(" + lati[i] + "))*sin(radians(latitude)))),2) " +
+                " AS distance " +
+                " FROM Product " +
+                " Having distance <= " + distance + ") dis on dis.idx=P.idx " +
+                " left outer join (select productIdx, count(*) apply from Apply group by productIdx) AP on AP.productIdx = P.idx " +
+                " WHERE deadline > current_timestamp()";
+        if (userIdx != null) {
+            selectRecommendQuery += " AND P.userIdx != " + userIdx + " AND RP.userIdx= " + userIdx;
+        }
+        selectRecommendQuery += " ORDER By rand() LIMIT " + page + "," + limit + ";";
+
+        if(userIdx!=null){
+            return this.jdbcTemplate.query(selectRecommendQuery,
+                    (rs, rowNum) -> new GetProductListRes(
+                            rs.getInt("idx"),
+                            rs.getString("productName"),
+                            rs.getString("price"),
+                            rs.getString("imgUrl"),
+                            rs.getString("view"),
+                            rs.getInt("wish"),
+                            rs.getInt("isWish"),
+                            rs.getString("apply"),
+                            rs.getInt("delay")));
+        }
+        else{
+            return this.jdbcTemplate.query(selectRecommendQuery,
+                    (rs, rowNum) -> new GetProductListRes(
+                            rs.getInt("idx"),
+                            rs.getString("productName"),
+                            rs.getString("price"),
+                            rs.getString("imgUrl"),
+                            rs.getString("view"),
+                            rs.getInt("wish"),
+                            0,
+                            rs.getString("apply"),
+                            rs.getInt("delay")));
+        }
+
+    }
 
     //상세조회
     public GetProductRes getProduct(Integer userIdx, int productIdx){

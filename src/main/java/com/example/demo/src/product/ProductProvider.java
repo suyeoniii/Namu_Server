@@ -38,6 +38,9 @@ public class ProductProvider {
         return productDao.selectImminent(userIdx, page, limit, lati, longi, distance);
     }
     //추천상품조회
+    public List <GetProductListRes> getRecommendProducts(Integer userIdx, int page, int limit, String[] lati, String[] longi, int distance) {
+        return productDao.selectRecommend(userIdx, page, limit, lati, longi, distance);
+    }
     //검색 조회
 
 

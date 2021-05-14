@@ -85,9 +85,9 @@ public class ProductController {
                 return new BaseResponse<>(getProductRes);
             }
             else if(type==1){ //추천상품 조회
-                //List<GetProductListRes> getProductRes = productProvider.getRecommendProducts(
-                        //userIdxByJwt, page, limit, lati, longi, distance);
-                //return new BaseResponse<>(getProductRes);
+                List<GetProductListRes> getProductRes = productProvider.getRecommendProducts(
+                        userIdx, start, Integer.parseInt(limit), lati, longi, dis);
+                return new BaseResponse<>(getProductRes);
             }
             return new BaseResponse<>(TYPE_EMPTY);
 
