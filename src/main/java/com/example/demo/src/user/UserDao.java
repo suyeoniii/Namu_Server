@@ -41,7 +41,7 @@ public class UserDao {
         Object[] getUserRegisterParams = new Object[]{userIdx,userIdx};
         String getUsersQuery = "select P.idx productIdx, imgUrl, productName, price, A.quantity, P.quantity totalCount, ifnull(applyCount,0) applyCount, deadline from Product P\n" +
                 "left outer join (select productIdx, SUM(quantity) applyCount , case when userIdx=? then quantity else 0  end quantity from Apply group by productIdx) A on A.productIdx=P.idx\n" +
-                "where P.userIdx=?";
+                "where P.userIdx=? order by P.createdAt DESC";
         return this.jdbcTemplate.query(getUsersQuery,
                 (rs,rowNum) -> new GetUserProductRes(
                         rs.getInt("productIdx"),

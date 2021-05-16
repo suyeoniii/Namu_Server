@@ -65,4 +65,35 @@ public class ProductService {
         }
         return productDao.updateApplyProduct(userIdx, productIdx, quantity);
     }
+
+    //물품 등록
+    public PostProductRes createProduct(int userIdx,
+                                         String productName,
+                                         String imgUrl,
+                                         int price,
+                                         int quantity,
+                                         int categoryIdx,
+                                         String description,
+                                         String deadline,
+                                         String location,
+                                         String date,
+                                         String latitude,
+                                         String longitude) throws BaseException {
+
+        int productIdx = productDao.insertProduct(userIdx,
+                productName,
+                imgUrl,
+                price,
+                quantity,
+                categoryIdx,
+                description,
+                deadline,
+                location,
+                date,
+                latitude,
+                longitude);
+
+        return new PostProductRes(productIdx);
+    }
+
 }

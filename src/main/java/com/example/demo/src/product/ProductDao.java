@@ -289,4 +289,36 @@ public class ProductDao {
                         rs.getInt("count")),
                 userIdx);
     }
+    //물품 등록
+    public int insertProduct(int userIdx,
+                                        String productName,
+                                        String imgUrl,
+                                        int price,
+                                        int quantity,
+                                        int categoryIdx,
+                                        String description,
+                                        String deadline,
+                                        String location,
+                                        String date,
+                                        String latitude,
+                                        String longitude){
+        Object[] insertProductParams = new Object[]{userIdx,
+                productName,
+                imgUrl,
+                price,
+                quantity,
+                categoryIdx,
+                description,
+                deadline,
+                location,
+                date,
+                latitude,
+                longitude};
+        String insertProductQuery = "INSERT INTO Product(userIdx, productName,imgUrl,price,quantity,categoryIdx,description,deadline,location,date,latitude,longitude) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        this.jdbcTemplate.update(insertProductQuery, insertProductParams);
+
+        String lastInserIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
+    }
 }

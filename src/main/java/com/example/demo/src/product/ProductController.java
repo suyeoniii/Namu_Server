@@ -9,9 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
+import static com.example.demo.utils.ValidationRegex.isRegexDate;
+import static com.example.demo.utils.ValidationRegex.isRegexEmail;
 
 @RestController
 @RequestMapping("/app/products")
@@ -163,6 +166,69 @@ public class ProductController {
             return new BaseResponse<>((exception.getStatus()));
         }
 
+    }
+
+    /**
+     * 물품 등록 API
+     * [POST] /products
+     * @return BaseResponse<PostProductRes>
+     */
+    // Path-variable
+    @ResponseBody
+    @PostMapping("")
+    public BaseResponse<PostProductRes> applyProduct(@RequestBody PostProductReq postProductReq) {
+        try {
+            int userIdx = jwtService.getUserIdx();
+
+            //빈값 체크
+            if(postProductReq.getProductName() == null)
+                return new BaseResponse<>(PRODUCT_NAME_EMPTY);
+            if(postProductReq.getPrice() == 0)
+                return new BaseResponse<>(PRODUCT_PRICE_EMPTY);
+            if(postProductReq.getCategoryIdx() == 0)
+                return new BaseResponse<>(PRODUCT_CATEGORY_EMPTY);
+            if(postProductReq.getDeadline() == null)
+                return new BaseResponse<>(PRODUCT_DEADLINE_EMPTY);
+            if(postProductReq.getLocation() == null)
+                return new BaseResponse<>(PRODUCT_LOCATION_EMPTY);
+            if(postProductReq.getLatitude() == null)
+                return new BaseResponse<>(PRODUCT_LATITUDE_EMPTY);
+            if(postProductReq.getLongitude() == null)
+                return new BaseResponse<>(PRODUCT_LONGITUDE_EMPTY);
+
+            //길이 체크
+            if(postProductReq.getProductName().length() > 50)
+                return new BaseResponse<>(PRODUCT_NAME_LENGTH);
+            if(postProductReq.getDescription() != null && postProductReq.getDescription().length() > 500)
+                return new BaseResponse<>(PRODUCT_DESCRIPTION_LENGTH);
+
+            //이미지 형식 체크
+            //위도경도 체크
+
+            //deadline확인
+            if(!isRegexDate(postProductReq.getDeadline()))
+                return new BaseResponse<>(PRODUCT_DEADLINE_ERROR_TYPE);
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat ( "yyyy-MM-dd");
+            String format_time = dateFormat.format (System.currentTimeMillis());
+
+            if (postProductReq.getDeadline().compareTo(format_time) <= 0)
+                return new BaseResponse<>(PRODUCT_DEADLINE_OVER);
+
+            //date 확인
+            if(postProductReq.getDate() != null && !postProductReq.getDate().equals("월요일") && !postProductReq.getDate().equals("화요일") && !postProductReq.getDate().equals("수요일") &&
+                    !postProductReq.getDate().equals("목요일") && !postProductReq.getDate().equals("금요일") && !postProductReq.getDate().equals("토요일") &&
+                    !postProductReq.getDate().equals("일요일"))
+                return new BaseResponse<>(PRODUCT_DATE_ERROR_TYPE);
+
+            PostProductRes postProductRes = productService.createProduct(userIdx, postProductReq.getProductName(), postProductReq.getImgUrl(), postProductReq.getPrice()
+            ,postProductReq.getQuantity(),postProductReq.getCategoryIdx(),postProductReq.getDescription(),postProductReq.getDeadline()
+                    ,postProductReq.getLocation(),postProductReq.getDate(),postProductReq.getLatitude(),postProductReq.getLongitude());
+
+            return new BaseResponse<>(postProductRes) ;
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
     }
 }
 
