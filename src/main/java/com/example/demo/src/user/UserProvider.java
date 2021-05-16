@@ -42,32 +42,13 @@ public class UserProvider {
         }
     }
 
-    public List<GetUserRes> getUsers() throws BaseException{
+    //회원정보 조회
+    public GetUserRes getUser(int userIdx, boolean isMypage) throws BaseException{
         try{
-            List<GetUserRes> getUserRes = userDao.getUsers();
+            GetUserRes getUserRes = userDao.getUser(userIdx, isMypage);
             return getUserRes;
         }
         catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public List<GetUserRes> getUsersByEmail(String email) throws BaseException{
-        try{
-            List<GetUserRes> getUsersRes = userDao.getUsersByEmail(email);
-            return getUsersRes;
-        }
-        catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
-                    }
-
-
-    public GetUserRes getUser(int userIdx) throws BaseException {
-        try {
-            GetUserRes getUserRes = userDao.getUser(userIdx);
-            return getUserRes;
-        } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }

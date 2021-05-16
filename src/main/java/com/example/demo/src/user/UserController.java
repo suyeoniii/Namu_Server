@@ -65,44 +65,23 @@ public class UserController {
     /**
      * 회원 조회 API
      * [GET] /users
-     * 회원 번호 및 이메일 검색 조회 API
-     * [GET] /users? Email=
-     * @return BaseResponse<List<GetUserRes>>
+     * @return BaseResponse <GetUserRes>
      */
-    //Query String
     @ResponseBody
-    @GetMapping("") // (GET) 127.0.0.1:9000/app/users
-    public BaseResponse<List<GetUserRes>> getUsers(@RequestParam(required = false) String Email) {
-        try{
-            if(Email == null){
-                List<GetUserRes> getUsersRes = userProvider.getUsers();
-                return new BaseResponse<>(getUsersRes);
-            }
-            // Get Users
-            List<GetUserRes> getUsersRes = userProvider.getUsersByEmail(Email);
-            return new BaseResponse<>(getUsersRes);
-        } catch(BaseException exception){
-            return new BaseResponse<>((exception.getStatus()));
-        }
-    }
-
-    /**
-     * 회원 1명 조회 API
-     * [GET] /users/:userIdx
-     * @return BaseResponse<GetUserRes>
-     */
-    // Path-variable
-    @ResponseBody
-    @GetMapping("/{userIdx}") // (GET) 127.0.0.1:9000/app/users/:userIdx
+    @GetMapping("/{userIdx}")
     public BaseResponse<GetUserRes> getUser(@PathVariable("userIdx") int userIdx) {
-        // Get Users
         try{
-            GetUserRes getUserRes = userProvider.getUser(userIdx);
-            return new BaseResponse<>(getUserRes);
+            Integer userIdxByJwt = jwtService.getUserIdxOrNot();
+            boolean isMypage = false;
+            if(userIdxByJwt!=null && userIdxByJwt == userIdx){
+                isMypage = true;
+            }
+            GetUserRes getUsersRes = userProvider.getUser(userIdx, isMypage);
+            return new BaseResponse<>(getUsersRes);
+
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
-
     }
 
     /**

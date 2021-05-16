@@ -37,44 +37,32 @@ public class UserDao {
         );
     }
 
-    public List<GetUserRes> getUsers(){
-        String getUsersQuery = "select * from UserInfo";
-        return this.jdbcTemplate.query(getUsersQuery,
-                (rs,rowNum) -> new GetUserRes(
-                        rs.getInt("userIdx"),
-                        rs.getString("userName"),
-                        rs.getString("ID"),
-                        rs.getString("Email"),
-                        rs.getString("password"))
-                );
-    }
+    //회원정보조회
+    public GetUserRes getUser(int userIdx, boolean isMypage){
+        String getUsersQuery = "select idx userIdx, nickname, email, phone, profileImg, trust from User where idx=?;";
 
-    public List<GetUserRes> getUsersByEmail(String email){
-        String getUsersByEmailQuery = "select * from UserInfo where email =?";
-        String getUsersByEmailParams = email;
-        return this.jdbcTemplate.query(getUsersByEmailQuery,
-                (rs, rowNum) -> new GetUserRes(
-                        rs.getInt("userIdx"),
-                        rs.getString("userName"),
-                        rs.getString("ID"),
-                        rs.getString("Email"),
-                        rs.getString("password")),
-                getUsersByEmailParams);
-    }
+        if(isMypage){
+            return this.jdbcTemplate.queryForObject(getUsersQuery,
+                    (rs,rowNum) -> new GetUserRes(
+                            rs.getInt("userIdx"),
+                            rs.getString("nickname"),
+                            rs.getString("email"),
+                            rs.getString("phone"),
+                            rs.getString("profileImg"),
+                            rs.getInt("trust")), userIdx);
+        }
+        else{
+            return this.jdbcTemplate.queryForObject(getUsersQuery,
+                    (rs,rowNum) -> new GetUserRes(
+                            rs.getInt("userIdx"),
+                            rs.getString("nickname"),
+                            null,
+                            null,
+                            rs.getString("profileImg"),
+                            rs.getInt("trust")), userIdx);
+        }
 
-    public GetUserRes getUser(int userIdx){
-        String getUserQuery = "select * from UserInfo where userIdx = ?";
-        int getUserParams = userIdx;
-        return this.jdbcTemplate.queryForObject(getUserQuery,
-                (rs, rowNum) -> new GetUserRes(
-                        rs.getInt("userIdx"),
-                        rs.getString("userName"),
-                        rs.getString("ID"),
-                        rs.getString("Email"),
-                        rs.getString("password")),
-                getUserParams);
     }
-    
 
     public int createUser(PostUserReq postUserReq){
         String createUserQuery = "insert into UserInfo (userName, ID, password, email) VALUES (?,?,?,?)";
