@@ -15,4 +15,5 @@ public class GetUserApplyRes {
     private int quantity;
     private int totalCount;
     private int applyCount;
+    private String deadline;
 }

@@ -20,7 +20,7 @@ public class UserDao {
     }
 
     public List<GetUserApplyRes> getUserApply(int userIdx){
-        String getUsersQuery = "SELECT P.idx productIdx, imgUrl, productName, price, A.quantity, P.quantity totalCount, applyCount FROM Product P\n" +
+        String getUsersQuery = "SELECT P.idx productIdx, imgUrl, productName, price, A.quantity, P.quantity totalCount, applyCount, deadline FROM Product P\n" +
                 "INNER JOIN Apply A ON A.productIdx=P.idx\n" +
                 "INNER JOIN (SELECT productIdx, SUM(quantity) applyCount FROM Apply WHERE status=0 GROUP BY productIdx) AP ON AP.productIdx=P.idx\n" +
                 "WHERE A.userIdx=?";
@@ -32,7 +32,8 @@ public class UserDao {
                         rs.getInt("price"),
                         rs.getInt("quantity"),
                         rs.getInt("totalCount"),
-                        rs.getInt("applyCount")), userIdx
+                        rs.getInt("applyCount"),
+                        rs.getString("deadline")), userIdx
         );
     }
 
