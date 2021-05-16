@@ -43,7 +43,7 @@ public class UserController {
     //Path variable
     @ResponseBody
     @GetMapping("/{userIdx}/apply") // (GET) 127.0.0.1:9000/app/users
-    public BaseResponse<List<GetUserApplyRes>> getUserApply(@PathVariable("userIdx") int userIdx) {
+    public BaseResponse<List<GetUserProductRes>> getUserApply(@PathVariable("userIdx") int userIdx) {
         try{
             if(userIdx == 0){
                 return new BaseResponse<>(USER_USERID_EMPTY);
@@ -55,7 +55,7 @@ public class UserController {
                 return new BaseResponse<>(USER_USERID_NOT_MATCH);
             }
             // Get User Apply
-            List<GetUserApplyRes> getUsersRes = userProvider.getUserApply(userIdx);
+            List<GetUserProductRes> getUsersRes = userProvider.getUserApply(userIdx);
             return new BaseResponse<>(getUsersRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
@@ -83,6 +83,29 @@ public class UserController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+    /**
+     * 등록물품 조회
+     * [GET] /users/:userIdx/register
+     * @return BaseResponse<List<GetUserProductRes>>
+     */
+    //Path variable
+    @ResponseBody
+    @GetMapping("/{userIdx}/register") // (GET) 127.0.0.1:9000/app/users
+    public BaseResponse<List<GetUserProductRes>> getUserRegister(@PathVariable("userIdx") int userIdx) {
+        try{
+            if(userIdx == 0){
+                return new BaseResponse<>(USER_USERID_EMPTY);
+            }
+            // Get User Apply
+            List<GetUserProductRes> getUsersRes = userProvider.getUserRegister(userIdx);
+            return new BaseResponse<>(getUsersRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+
 
     /**
      * 회원가입 API

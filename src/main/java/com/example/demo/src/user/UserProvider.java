@@ -32,10 +32,21 @@ public class UserProvider {
     }
 
     //신청물품 조회
-    public List<GetUserApplyRes> getUserApply(int userIdx) throws BaseException{
+    public List<GetUserProductRes> getUserApply(int userIdx) throws BaseException{
         try{
-            List<GetUserApplyRes> getUserApplyRes = userDao.getUserApply(userIdx);
-            return getUserApplyRes;
+            List<GetUserProductRes> getUserProductRes = userDao.getUserApply(userIdx);
+            return getUserProductRes;
+        }
+        catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //등록물품 조회
+    public List<GetUserProductRes> getUserRegister(int userIdx) throws BaseException{
+        try{
+            List<GetUserProductRes> getUserProductRes = userDao.getUserRegister(userIdx);
+            return getUserProductRes;
         }
         catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);

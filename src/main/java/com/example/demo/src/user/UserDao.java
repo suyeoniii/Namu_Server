@@ -19,13 +19,13 @@ public class UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<GetUserApplyRes> getUserApply(int userIdx){
+    public List<GetUserProductRes> getUserApply(int userIdx){
         String getUsersQuery = "SELECT P.idx productIdx, imgUrl, productName, price, A.quantity, P.quantity totalCount, applyCount, deadline FROM Product P\n" +
                 "INNER JOIN Apply A ON A.productIdx=P.idx\n" +
                 "INNER JOIN (SELECT productIdx, SUM(quantity) applyCount FROM Apply WHERE status=0 GROUP BY productIdx) AP ON AP.productIdx=P.idx\n" +
                 "WHERE A.userIdx=?";
         return this.jdbcTemplate.query(getUsersQuery,
-                (rs,rowNum) -> new GetUserApplyRes(
+                (rs,rowNum) -> new GetUserProductRes(
                         rs.getInt("productIdx"),
                         rs.getString("imgUrl"),
                         rs.getString("productName"),
@@ -34,6 +34,24 @@ public class UserDao {
                         rs.getInt("totalCount"),
                         rs.getInt("applyCount"),
                         rs.getString("deadline")), userIdx
+        );
+    }
+    //등록물품 조회
+    public List<GetUserProductRes> getUserRegister(int userIdx){
+        Object[] getUserRegisterParams = new Object[]{userIdx,userIdx};
+        String getUsersQuery = "select P.idx productIdx, imgUrl, productName, price, A.quantity, P.quantity totalCount, ifnull(applyCount,0) applyCount, deadline from Product P\n" +
+                "left outer join (select productIdx, SUM(quantity) applyCount , case when userIdx=? then quantity else 0  end quantity from Apply group by productIdx) A on A.productIdx=P.idx\n" +
+                "where P.userIdx=?";
+        return this.jdbcTemplate.query(getUsersQuery,
+                (rs,rowNum) -> new GetUserProductRes(
+                        rs.getInt("productIdx"),
+                        rs.getString("imgUrl"),
+                        rs.getString("productName"),
+                        rs.getInt("price"),
+                        rs.getInt("quantity"),
+                        rs.getInt("totalCount"),
+                        rs.getInt("applyCount"),
+                        rs.getString("deadline")), getUserRegisterParams
         );
     }
 

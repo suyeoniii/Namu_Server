@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class GetUserApplyRes {
+public class GetUserProductRes {
     private int productIdx;
     private String imgUrl;
     private String productName;
