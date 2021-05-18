@@ -130,4 +130,15 @@ public class ProductService {
         return new PostProductRes(productIdx);
     }
 
+    //찜 등록,해제
+    public PatchProductRes updateProductStatus(int userIdx, int productIdx, int status) throws BaseException {
+
+        if(productProvider.productUserCheck(userIdx, productIdx) == 0){
+            throw new BaseException(PRODUCT_USER_NOT_MATCH);
+        }
+
+        return productDao.updateProductStatus(productIdx, status);
+
+    }
+
 }

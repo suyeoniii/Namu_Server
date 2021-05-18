@@ -293,5 +293,54 @@ public class ProductController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+    /**
+     * 물품 상태 수정 (기간연장, 진행, 취소, 삭제, 완료)
+     * [POST] /products/:productIdx
+     *
+     * @return BaseResponse<>
+     */
+    // Path-variable
+    @ResponseBody
+    @PatchMapping("/{productIdx}")
+    public BaseResponse<PatchProductRes> updateProductStatus(@PathVariable("productIdx") int productIdx, @RequestBody PatchProductReq patchProductReq) {
+        // 찜 등록/해제
+        try {
+            //jwt에서 idx 추출.
+            Integer userIdx = jwtService.getUserIdx();
+
+            int status = patchProductReq.getStatus();
+
+            if(status == 0){
+                return new BaseResponse<>(PRODUCT_STATUS_EMPTY);
+            }
+            else if(status == 1){ //기간 연장
+                PatchProductRes patchProductRes = productService.updateProductStatus(userIdx, productIdx, status);
+                return new BaseResponse<>(patchProductRes);
+            }
+            else if(status == 2){ //진행
+                PatchProductRes patchProductRes = productService.updateProductStatus(userIdx, productIdx, status);
+                return new BaseResponse<>(patchProductRes);
+            }
+            else if(status == 3){ //취소
+                PatchProductRes patchProductRes = productService.updateProductStatus(userIdx, productIdx, status);
+                return new BaseResponse<>(patchProductRes);
+            }
+            else if(status == 4){ //삭제
+                PatchProductRes patchProductRes = productService.updateProductStatus(userIdx, productIdx, status);
+                return new BaseResponse<>(patchProductRes);
+            }
+            else if(status == 5){ //완료
+                PatchProductRes patchProductRes = productService.updateProductStatus(userIdx, productIdx, status);
+                return new BaseResponse<>(patchProductRes);
+            }
+            else{
+                return new BaseResponse<>(PRODUCT_STATUS_ERROR_TYPE);
+            }
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+    }
 }
 

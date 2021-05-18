@@ -51,6 +51,8 @@ public enum BaseResponseStatus {
     SEARCH_QUERY_EMPTY(false, 2023, "검색어를 입력해주세요"),
     PRODUCT_NOT_EXIST(false, 2024, "존재하지 않는 물품입니다"),
     PRODUCT_USER_NOT_MATCH(false, 2025, "존재하지 않는 물품이거나, 등록자가 아닙니다"),
+    PRODUCT_STATUS_EMPTY(false, 2026, "물품 상태값을 입력해주세요"),
+    PRODUCT_STATUS_ERROR_TYPE(false, 2027, "물품 상태값은 1-5중에 입력해주세요"),
 
 
     //

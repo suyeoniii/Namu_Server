@@ -359,4 +359,18 @@ public class ProductDao {
         this.jdbcTemplate.update(updateProductQuery, updateProductParams);
         return productIdx;
     }
+    //물품 상태 수정
+    public PatchProductRes updateProductStatus(int productIdx, int status){
+        Object[] updateProductStatusParams = new Object[]{status, productIdx};
+        String updateProductStatusQuery = "UPDATE Product SET status = ? WHERE idx=?";
+        this.jdbcTemplate.update(updateProductStatusQuery, updateProductStatusParams);
+        return new PatchProductRes(productIdx, status);
+    }
+    //물품 기간연장
+    public PatchProductRes updateProductDeadline(int productIdx, int status){
+        Object[] updateProductStatusParams = new Object[]{status, productIdx};
+        String updateProductStatusQuery = "UPDATE Product SET status = ? WHERE idx=?";
+        this.jdbcTemplate.update(updateProductStatusQuery, updateProductStatusParams);
+        return new PatchProductRes(productIdx, status);
+    }
 }
