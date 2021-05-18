@@ -64,6 +64,17 @@ public class UserProvider {
         }
     }
 
+    //최근본 물품 조회
+    public List<GetProductRes> getUserViewed(int userIdx) throws BaseException{
+        try{
+            List<GetProductRes> getProductRes = userDao.getUserViewed(userIdx);
+            return getProductRes;
+        }
+        catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     public int checkEmail(String email) throws BaseException{
         try{
             return userDao.checkEmail(email);

@@ -104,7 +104,25 @@ public class UserController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
-
+    /**
+     * 최근본 물품 조회
+     * [GET] /users/:userIdx/viewed
+     * @return BaseResponse<List<GetProductRes>>
+     */
+    //Path variable
+    @ResponseBody
+    @GetMapping("/{userIdx}/viewed") // (GET) 127.0.0.1:9000/app/users
+    public BaseResponse<List<GetProductRes>> getUserViewed(@PathVariable("userIdx") int userIdx) {
+        try{
+            if(userIdx == 0){
+                return new BaseResponse<>(USER_USERID_EMPTY);
+            }
+            List<GetProductRes> getUsersRes = userProvider.getUserViewed(userIdx);
+            return new BaseResponse<>(getUsersRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 
 
     /**

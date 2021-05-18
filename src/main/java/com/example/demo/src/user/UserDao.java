@@ -54,6 +54,20 @@ public class UserDao {
                         rs.getString("deadline")), getUserRegisterParams
         );
     }
+    //최근본물품 조회
+    public List<GetProductRes> getUserViewed(int userIdx){
+        String getUsersQuery = "select P.idx productIdx, imgUrl, productName, price, quantity, deadline from Viewed V\n" +
+                "inner join Product P on P.idx=V.productIdx where V.userIdx=? order by V.updatedAt DESC";
+        return this.jdbcTemplate.query(getUsersQuery,
+                (rs,rowNum) -> new GetProductRes(
+                        rs.getInt("productIdx"),
+                        rs.getString("imgUrl"),
+                        rs.getString("productName"),
+                        rs.getInt("price"),
+                        rs.getInt("quantity"),
+                        rs.getString("deadline")), userIdx
+        );
+    }
 
     //회원정보조회
     public GetUserRes getUser(int userIdx, boolean isMypage){
