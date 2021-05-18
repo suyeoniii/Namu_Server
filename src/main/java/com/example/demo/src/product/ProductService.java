@@ -130,7 +130,7 @@ public class ProductService {
         return new PostProductRes(productIdx);
     }
 
-    //찜 등록,해제
+    //물품 상태 수정
     public PatchProductRes updateProductStatus(int userIdx, int productIdx, int status) throws BaseException {
 
         if(productProvider.productUserCheck(userIdx, productIdx) == 0){
@@ -138,6 +138,22 @@ public class ProductService {
         }
 
         return productDao.updateProductStatus(productIdx, status);
+
+    }
+
+    //물품 기간 연장
+    public PatchProductRes updateProductDeadline(int userIdx, int productIdx) throws BaseException {
+
+        if(productProvider.productUserCheck(userIdx, productIdx) == 0){
+            throw new BaseException(PRODUCT_USER_NOT_MATCH);
+        }
+        if(productProvider.productCheck(productIdx) == 0){
+            throw new BaseException(PRODUCT_STATUS_NOT_MATCH);
+        }
+        if(productProvider.productDeadlineCheck(productIdx) == 0){
+            throw new BaseException(PRODUCT_DEADLINE_LEFT);
+        }
+        return productDao.updateProductDeadline(productIdx);
 
     }
 

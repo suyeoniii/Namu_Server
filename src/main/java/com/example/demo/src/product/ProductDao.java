@@ -230,10 +230,17 @@ public class ProductDao {
                 int.class,
                 productIdx);
     }
+    //물품 체크
+    public int productDeadlineCheck(int productIdx){
+        String productQuery = "select exists(select deadline from Product where idx=? and status=0 and deadline<=date_add(now(),INTERVAL 3 DAY))";
+        return this.jdbcTemplate.queryForObject(productQuery,
+                int.class,
+                productIdx);
+    }
     //물품 등록자 체크
     public int productUserCheck(int userIdx, int productIdx){
         Object[] applyProductParams = new Object[]{userIdx, productIdx};
-        String productQuery = "select exists(select idx from Product where status=0 and userIdx=? and idx=?);";
+        String productQuery = "select exists(select idx from Product where status!=4 and userIdx=? and idx=?);";
         return this.jdbcTemplate.queryForObject(productQuery,
                 int.class,
                 applyProductParams);
@@ -367,10 +374,9 @@ public class ProductDao {
         return new PatchProductRes(productIdx, status);
     }
     //물품 기간연장
-    public PatchProductRes updateProductDeadline(int productIdx, int status){
-        Object[] updateProductStatusParams = new Object[]{status, productIdx};
-        String updateProductStatusQuery = "UPDATE Product SET status = ? WHERE idx=?";
-        this.jdbcTemplate.update(updateProductStatusQuery, updateProductStatusParams);
-        return new PatchProductRes(productIdx, status);
+    public PatchProductRes updateProductDeadline(int productIdx){
+        String updateProductStatusQuery = "UPDATE Product SET deadline = date_add(deadline,INTERVAL 7 DAY) ,delay = delay+1 WHERE idx=?";
+        this.jdbcTemplate.update(updateProductStatusQuery, productIdx);
+        return new PatchProductRes(productIdx, 1);
     }
 }

@@ -53,6 +53,8 @@ public enum BaseResponseStatus {
     PRODUCT_USER_NOT_MATCH(false, 2025, "존재하지 않는 물품이거나, 등록자가 아닙니다"),
     PRODUCT_STATUS_EMPTY(false, 2026, "물품 상태값을 입력해주세요"),
     PRODUCT_STATUS_ERROR_TYPE(false, 2027, "물품 상태값은 1-5중에 입력해주세요"),
+    PRODUCT_STATUS_NOT_MATCH(false, 2028, "수정이 불가능한 물품상태입니다"),
+    PRODUCT_DEADLINE_LEFT(false, 2029, "마감일 3일전부터 연장가능합니다"),
 
 
     //

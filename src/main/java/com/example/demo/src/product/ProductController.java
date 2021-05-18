@@ -293,6 +293,7 @@ public class ProductController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
     /**
      * 물품 상태 수정 (기간연장, 진행, 취소, 삭제, 완료)
      * [POST] /products/:productIdx
@@ -314,7 +315,7 @@ public class ProductController {
                 return new BaseResponse<>(PRODUCT_STATUS_EMPTY);
             }
             else if(status == 1){ //기간 연장
-                PatchProductRes patchProductRes = productService.updateProductStatus(userIdx, productIdx, status);
+                PatchProductRes patchProductRes = productService.updateProductDeadline(userIdx, productIdx);
                 return new BaseResponse<>(patchProductRes);
             }
             else if(status == 2){ //진행

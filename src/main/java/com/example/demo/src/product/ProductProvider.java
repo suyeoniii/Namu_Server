@@ -74,4 +74,9 @@ public class ProductProvider {
         return productDao.productUserCheck(userIdx, productIdx);
     }
 
+    //신청여부 체크
+    public int productDeadlineCheck(int productIdx) {
+        return productDao.productDeadlineCheck(productIdx);
+    }
+
 }
