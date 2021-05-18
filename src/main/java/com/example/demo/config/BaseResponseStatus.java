@@ -50,6 +50,7 @@ public enum BaseResponseStatus {
     PRODUCT_DATE_ERROR_TYPE(false, 2022, "date는 요일만 입력가능합니다"),
     SEARCH_QUERY_EMPTY(false, 2023, "검색어를 입력해주세요"),
     PRODUCT_NOT_EXIST(false, 2024, "존재하지 않는 물품입니다"),
+    PRODUCT_USER_NOT_MATCH(false, 2025, "존재하지 않는 물품이거나, 등록자가 아닙니다"),
 
 
     //

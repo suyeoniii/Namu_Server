@@ -96,4 +96,38 @@ public class ProductService {
         return new PostProductRes(productIdx);
     }
 
+    //물품 수정
+    public PostProductRes updateProduct(int userIdx, int productIdx,
+                                        String productName,
+                                        String imgUrl,
+                                        int price,
+                                        int quantity,
+                                        int categoryIdx,
+                                        String description,
+                                        String deadline,
+                                        String location,
+                                        String date,
+                                        String latitude,
+                                        String longitude) throws BaseException {
+
+        if(productProvider.productUserCheck(userIdx, productIdx) == 0){
+            throw new BaseException(PRODUCT_USER_NOT_MATCH);
+        }
+
+        productDao.updateProduct(productIdx,
+                productName,
+                imgUrl,
+                price,
+                quantity,
+                categoryIdx,
+                description,
+                deadline,
+                location,
+                date,
+                latitude,
+                longitude);
+
+        return new PostProductRes(productIdx);
+    }
+
 }

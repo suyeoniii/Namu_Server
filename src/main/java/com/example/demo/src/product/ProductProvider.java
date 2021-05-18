@@ -69,4 +69,9 @@ public class ProductProvider {
         return productDao.selectUSerAddress(userIdx);
     }
 
+    //물품, 등록자 체크
+    public int productUserCheck(int userIdx, int productIdx) {
+        return productDao.productUserCheck(userIdx, productIdx);
+    }
+
 }

@@ -230,6 +230,14 @@ public class ProductDao {
                 int.class,
                 productIdx);
     }
+    //물품 등록자 체크
+    public int productUserCheck(int userIdx, int productIdx){
+        Object[] applyProductParams = new Object[]{userIdx, productIdx};
+        String productQuery = "select exists(select idx from Product where status=0 and userIdx=? and idx=?);";
+        return this.jdbcTemplate.queryForObject(productQuery,
+                int.class,
+                applyProductParams);
+    }
     //신청 체크
     public int applyCheck(Integer userIdx, int productIdx){
         Object[] applyProductParams = new Object[]{userIdx, productIdx};
@@ -320,5 +328,35 @@ public class ProductDao {
 
         String lastInserIdQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
+    }
+    //물품 수정
+    public int updateProduct(int productIdx,
+                             String productName,
+                             String imgUrl,
+                             int price,
+                             int quantity,
+                             int categoryIdx,
+                             String description,
+                             String deadline,
+                             String location,
+                             String date,
+                             String latitude,
+                             String longitude){
+        Object[] updateProductParams = new Object[]{
+                productName,
+                imgUrl,
+                price,
+                quantity,
+                categoryIdx,
+                description,
+                deadline,
+                location,
+                date,
+                latitude,
+                longitude, productIdx};
+        String updateProductQuery = "UPDATE Product SET productName=? ,imgUrl=? ,price=? ,quantity=? ,categoryIdx=? ,description=? ,deadline=? ,location=? ,date=? ,latitude=? ,longitude=? WHERE idx=? ";
+
+        this.jdbcTemplate.update(updateProductQuery, updateProductParams);
+        return productIdx;
     }
 }
