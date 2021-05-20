@@ -268,7 +268,7 @@ public class ProductDao {
         Object[] applyProductParams = new Object[]{quantity, userIdx, productIdx};
         String applyProductQuery = "UPDATE Apply SET quantity = ? WHERE userIdx=? AND productIdx=?";
         this.jdbcTemplate.update(applyProductQuery, applyProductParams);
-        return new ApplyProductRes(productIdx);
+        return new ApplyProductRes(productIdx, quantity);
     }
     //wish 등록
     public WishProductRes createWish(Integer userIdx, int productIdx){
@@ -290,7 +290,7 @@ public class ProductDao {
         Object[] applyProductParams = new Object[]{userIdx, productIdx, quantity};
         String applyProductQuery = "INSERT INTO Apply(userIdx,productIdx,quantity) VALUES(?, ?, ?)";
         this.jdbcTemplate.update(applyProductQuery, applyProductParams);
-        return new ApplyProductRes(productIdx);
+        return new ApplyProductRes(productIdx, quantity);
     }
     //사용자 주소 조회
     public List<GetUserAddressRes> selectUSerAddress(Integer userIdx){

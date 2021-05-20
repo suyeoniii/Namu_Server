@@ -9,4 +9,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ApplyProductRes {
     private int productIdx;
+    private int quantity;
 }
