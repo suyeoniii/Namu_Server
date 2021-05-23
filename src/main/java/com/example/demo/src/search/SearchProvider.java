@@ -3,6 +3,7 @@ package com.example.demo.src.search;
 import com.example.demo.src.product.ProductDao;
 import com.example.demo.src.product.model.*;
 import com.example.demo.src.search.model.GetRecentSearchRes;
+import com.example.demo.src.search.model.GetSearchProductRes;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,10 @@ public class SearchProvider {
     //최근 검색어 조회
     public List<GetRecentSearchRes> getRecentSearch(int userIdx) {
         return searchDao.getRecentSearch(userIdx);
+    }
+    //물품 조회
+    public List<GetSearchProductRes> getSearchProduct(Integer userIdx, int page, int limit, String[] lati, String[] longi, int distance, String[] q) {
+        return searchDao.getSearchProduct(userIdx, page, limit, lati, longi, distance, q);
     }
 }
 
