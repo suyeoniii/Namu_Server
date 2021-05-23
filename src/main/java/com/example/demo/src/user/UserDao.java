@@ -96,6 +96,20 @@ public class UserDao {
 
     }
 
+    //사용자 주소 조회
+    public List<GetAddressRes> getUserAddress(int userIdx){
+        String getUsersQuery = "select idx, addressName, latitude, longitude, isChecked from Address where userIdx=?";
+
+            return this.jdbcTemplate.query(getUsersQuery,
+                    (rs,rowNum) -> new GetAddressRes(
+                            rs.getInt("idx"),
+                            rs.getString("addressName"),
+                            rs.getString("latitude"),
+                            rs.getString("longitude"),
+                            rs.getString("isChecked")), userIdx);
+
+    }
+
     public int createUser(PostUserReq postUserReq){
         String createUserQuery = "insert into UserInfo (userName, ID, password, email) VALUES (?,?,?,?)";
         Object[] createUserParams = new Object[]{postUserReq.getUserName(), postUserReq.getId(), postUserReq.getPassword(), postUserReq.getEmail()};

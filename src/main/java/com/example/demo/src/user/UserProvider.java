@@ -75,6 +75,17 @@ public class UserProvider {
         }
     }
 
+    //사용자 주소 조회
+    public List<GetAddressRes> getUserAddress(int userIdx) throws BaseException{
+        try{
+            List<GetAddressRes> getAddressRes = userDao.getUserAddress(userIdx);
+            return getAddressRes;
+        }
+        catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     public int checkEmail(String email) throws BaseException{
         try{
             return userDao.checkEmail(email);

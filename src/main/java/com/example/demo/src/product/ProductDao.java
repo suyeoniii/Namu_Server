@@ -111,7 +111,7 @@ public class ProductDao {
             selectRecommendQuery += " AND P.userIdx != " + userIdx + " AND RP.userIdx= " + userIdx;
         }
         selectRecommendQuery += " ORDER By rand() LIMIT " + page + "," + limit + ";";
-
+        System.out.println(selectRecommendQuery);
         if(userIdx!=null){
             return this.jdbcTemplate.query(selectRecommendQuery,
                     (rs, rowNum) -> new GetProductListRes(

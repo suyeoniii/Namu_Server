@@ -118,6 +118,34 @@ public class UserController {
                 return new BaseResponse<>(USER_USERID_EMPTY);
             }
             List<GetProductRes> getUsersRes = userProvider.getUserViewed(userIdx);
+            String jwt = jwtService.createJwt(userIdx);
+            System.out.println(jwt);
+            return new BaseResponse<>(getUsersRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 유저 주소 조회
+     * [GET] /users/:userIdx/address
+     * @return BaseResponse<List<GetAddressRes>>
+     */
+    //Path variable
+    @ResponseBody
+    @GetMapping("/{userIdx}/address")
+    public BaseResponse<List<GetAddressRes>> getUserGetAddressRes(@PathVariable("userIdx") int userIdx) {
+        try{
+            if(userIdx == 0){
+                return new BaseResponse<>(USER_USERID_EMPTY);
+            }
+            Integer userIdxByJwt = jwtService.getUserIdx();
+            if(userIdxByJwt!=userIdx)
+                return new BaseResponse<>(USER_USERID_NOT_MATCH);
+
+            List<GetAddressRes> getUsersRes = userProvider.getUserAddress(userIdx);
+            String jwt = jwtService.createJwt(userIdx);
+            System.out.println(jwt);
             return new BaseResponse<>(getUsersRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
