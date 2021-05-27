@@ -118,8 +118,6 @@ public class UserController {
                 return new BaseResponse<>(USER_USERID_EMPTY);
             }
             List<GetProductRes> getUsersRes = userProvider.getUserViewed(userIdx);
-            String jwt = jwtService.createJwt(userIdx);
-            System.out.println(jwt);
             return new BaseResponse<>(getUsersRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
@@ -144,8 +142,27 @@ public class UserController {
                 return new BaseResponse<>(USER_USERID_NOT_MATCH);
 
             List<GetAddressRes> getUsersRes = userProvider.getUserAddress(userIdx);
-            String jwt = jwtService.createJwt(userIdx);
-            System.out.println(jwt);
+            return new BaseResponse<>(getUsersRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 사용자 거래내역 조회
+     * [GET] /users/:userIdx/record
+     * @return BaseResponse<GetUserRecordRes>>
+     */
+    //Path variable
+    @ResponseBody
+    @GetMapping("/{userIdx}/record") // (GET) 127.0.0.1:9000/app/users
+    public BaseResponse<GetUserRecordRes> getUserRecord(@PathVariable("userIdx") int userIdx) {
+        try{
+            if(userIdx == 0){
+                return new BaseResponse<>(USER_USERID_EMPTY);
+            }
+            GetUserRecordRes getUsersRes = userProvider.getUserRecord(userIdx);
+
             return new BaseResponse<>(getUsersRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));

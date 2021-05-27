@@ -45,8 +45,8 @@ public class UserService {
         String pwd;
         try{
             //암호화
-            pwd = new AES128(Secret.USER_INFO_PASSWORD_KEY).encrypt(postUserReq.getPassword());
-            postUserReq.setPassword(pwd);
+            //pwd = new AES128(Secret.USER_INFO_PASSWORD_KEY).encrypt(postUserReq.getPassword());
+            //postUserReq.setPassword(pwd);
         } catch (Exception ignored) {
             throw new BaseException(PASSWORD_ENCRYPTION_ERROR);
         }

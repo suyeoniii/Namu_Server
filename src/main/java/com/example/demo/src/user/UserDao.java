@@ -110,6 +110,44 @@ public class UserDao {
 
     }
 
+    //거래내역 조회
+    public GetUserRecordRes getUserRecord(int userIdx){
+        String getUserRecordNumQuery = "select count(case when P.status=5 and A.status=0 then 1 end) numOfComplete,\n" +
+                "       count(case when A.status=1 then 1 end) numOfCancel\n" +
+                "       from Apply A\n" +
+                "inner join Product P on P.idx=A.productIdx\n" +
+                "where A.userIdx=?";
+
+        String getUserRecordQuery = "select productIdx, productName, imgUrl\n" +
+                "     ,case when A.status=0 and P.status=0 then '신청'\n" +
+                "         when A.status=0 and P.status=1 then '기간연장'\n" +
+                "              when A.status=0 and P.status=2 then '진행확정'\n" +
+                "                   when A.status=0 and P.status=3 then '등록자취소'\n" +
+                "                        when A.status=0 and P.status=4 then '거래완료'\n" +
+                "                             when A.status=1 then '신청자취소'\n" +
+                "                                end status\n" +
+                "                                 ,case when A.status=1 then DATE_FORMAT(A.updatedAt, '%Y-%m-%d')\n" +
+                "                                else DATE_FORMAT(P.updatedAt, '%Y-%m-%d') end updatedAt\n" +
+                "from Apply A\n" +
+                "inner join Product P on P.idx=A.productIdx\n" +
+                "where A.userIdx=? order by updatedAt DESC";
+
+        List<Records> records = this.jdbcTemplate.query(getUserRecordQuery,
+                (rs,rowNum) -> new Records(
+                        rs.getInt("productIdx"),
+                        rs.getString("productName"),
+                        rs.getString("imgUrl"),
+                        rs.getString("status"),
+                        rs.getString("updatedAt")), userIdx);
+
+        return this.jdbcTemplate.queryForObject(getUserRecordNumQuery,
+                (rs,rowNum) -> new GetUserRecordRes(
+                        rs.getInt("numOfComplete"),
+                        rs.getInt("numOfCancel"),
+                        records), userIdx);
+
+    }
+
     public int createUser(PostUserReq postUserReq){
         String createUserQuery = "insert into UserInfo (userName, ID, password, email) VALUES (?,?,?,?)";
         Object[] createUserParams = new Object[]{postUserReq.getUserName(), postUserReq.getId(), postUserReq.getPassword(), postUserReq.getEmail()};

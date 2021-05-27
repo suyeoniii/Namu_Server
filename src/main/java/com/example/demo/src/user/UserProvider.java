@@ -86,6 +86,17 @@ public class UserProvider {
         }
     }
 
+    //사용자 거래내역 조회
+    public GetUserRecordRes getUserRecord(int userIdx) throws BaseException{
+        try{
+            GetUserRecordRes getUserRes = userDao.getUserRecord(userIdx);
+            return getUserRes;
+        }
+        catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     public int checkEmail(String email) throws BaseException{
         try{
             return userDao.checkEmail(email);
@@ -98,20 +109,20 @@ public class UserProvider {
         User user = userDao.getPwd(postLoginReq);
         String password;
         try {
-            password = new AES128(Secret.USER_INFO_PASSWORD_KEY).decrypt(user.getPassword());
+            //password = new AES128(Secret.USER_INFO_PASSWORD_KEY).decrypt(user.getPassword());
         } catch (Exception ignored) {
             throw new BaseException(PASSWORD_DECRYPTION_ERROR);
         }
 
-        if(postLoginReq.getPassword().equals(password)){
+        /*if(postLoginReq.getPassword().equals(password)){
             int userIdx = userDao.getPwd(postLoginReq).getUserIdx();
             String jwt = jwtService.createJwt(userIdx);
             return new PostLoginRes(userIdx,jwt);
         }
         else{
             throw new BaseException(FAILED_TO_LOGIN);
-        }
-
+        }*/
+        return null;
     }
 
 }
