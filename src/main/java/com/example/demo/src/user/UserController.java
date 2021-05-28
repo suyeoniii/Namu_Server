@@ -43,7 +43,8 @@ public class UserController {
     //Path variable
     @ResponseBody
     @GetMapping("/{userIdx}/apply") // (GET) 127.0.0.1:9000/app/users
-    public BaseResponse<List<GetUserProductRes>> getUserApply(@PathVariable("userIdx") int userIdx) {
+    public BaseResponse<List<GetUserProductRes>> getUserApply(@PathVariable("userIdx") int userIdx, @RequestParam(required = false, defaultValue = "1") String page,
+                                                              @RequestParam(required = false, defaultValue = "10") String limit) {
         try{
             if(userIdx == 0){
                 return new BaseResponse<>(USER_USERID_EMPTY);
@@ -54,8 +55,9 @@ public class UserController {
             if(userIdx != userIdxByJwt){
                 return new BaseResponse<>(USER_USERID_NOT_MATCH);
             }
+            int start = Integer.parseInt(limit) * (Integer.parseInt(page) - 1);
             // Get User Apply
-            List<GetUserProductRes> getUsersRes = userProvider.getUserApply(userIdx);
+            List<GetUserProductRes> getUsersRes = userProvider.getUserApply(userIdx, start, Integer.parseInt(limit));
             return new BaseResponse<>(getUsersRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
@@ -92,13 +94,15 @@ public class UserController {
     //Path variable
     @ResponseBody
     @GetMapping("/{userIdx}/register") // (GET) 127.0.0.1:9000/app/users
-    public BaseResponse<List<GetUserProductRes>> getUserRegister(@PathVariable("userIdx") int userIdx) {
+    public BaseResponse<List<GetUserProductRes>> getUserRegister(@PathVariable("userIdx") int userIdx, @RequestParam(required = false, defaultValue = "1") String page,
+                                                                 @RequestParam(required = false, defaultValue = "10") String limit) {
         try{
             if(userIdx == 0){
                 return new BaseResponse<>(USER_USERID_EMPTY);
             }
+            int start = Integer.parseInt(limit) * (Integer.parseInt(page) - 1);
             // Get User Apply
-            List<GetUserProductRes> getUsersRes = userProvider.getUserRegister(userIdx);
+            List<GetUserProductRes> getUsersRes = userProvider.getUserRegister(userIdx, start, Integer.parseInt(limit));
             return new BaseResponse<>(getUsersRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
@@ -112,12 +116,21 @@ public class UserController {
     //Path variable
     @ResponseBody
     @GetMapping("/{userIdx}/viewed") // (GET) 127.0.0.1:9000/app/users
-    public BaseResponse<List<GetProductRes>> getUserViewed(@PathVariable("userIdx") int userIdx) {
+    public BaseResponse<List<GetProductRes>> getUserViewed(@PathVariable("userIdx") int userIdx, @RequestParam(required = false, defaultValue = "1") String page,
+                                                           @RequestParam(required = false, defaultValue = "10") String limit) {
         try{
-            if(userIdx == 0){
+            if (userIdx == 0) {
                 return new BaseResponse<>(USER_USERID_EMPTY);
             }
-            List<GetProductRes> getUsersRes = userProvider.getUserViewed(userIdx);
+
+            //페이징 기본값 설정
+            int start = Integer.parseInt(limit) * (Integer.parseInt(page) - 1);
+            Integer userIdxFromJWT = jwtService.getUserIdx();
+
+            if (userIdx != userIdxFromJWT)
+                return new BaseResponse<>(USER_USERID_NOT_MATCH);
+
+            List<GetProductRes> getUsersRes = userProvider.getUserViewed(userIdx, start, Integer.parseInt(limit));
             return new BaseResponse<>(getUsersRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
@@ -177,7 +190,7 @@ public class UserController {
     //Path variable
     @ResponseBody
     @GetMapping("/{userIdx}/wish") // (GET) 127.0.0.1:9000/app/users
-    public BaseResponse<List<GetProductRes>> getUserViewed(@PathVariable("userIdx") int userIdx, @RequestParam(required = false, defaultValue = "1") String page,
+    public BaseResponse<List<GetProductRes>> getUserWish(@PathVariable("userIdx") int userIdx, @RequestParam(required = false, defaultValue = "1") String page,
                                                            @RequestParam(required = false, defaultValue = "20") String limit) {
         try {
             if (userIdx == 0) {

@@ -32,9 +32,9 @@ public class UserProvider {
     }
 
     //신청물품 조회
-    public List<GetUserProductRes> getUserApply(int userIdx) throws BaseException{
+    public List<GetUserProductRes> getUserApply(int userIdx, int page, int limit) throws BaseException{
         try{
-            List<GetUserProductRes> getUserProductRes = userDao.getUserApply(userIdx);
+            List<GetUserProductRes> getUserProductRes = userDao.getUserApply(userIdx, page, limit);
             return getUserProductRes;
         }
         catch (Exception exception) {
@@ -43,9 +43,9 @@ public class UserProvider {
     }
 
     //등록물품 조회
-    public List<GetUserProductRes> getUserRegister(int userIdx) throws BaseException{
+    public List<GetUserProductRes> getUserRegister(int userIdx, int page, int limit) throws BaseException{
         try{
-            List<GetUserProductRes> getUserProductRes = userDao.getUserRegister(userIdx);
+            List<GetUserProductRes> getUserProductRes = userDao.getUserRegister(userIdx, page, limit);
             return getUserProductRes;
         }
         catch (Exception exception) {
@@ -65,9 +65,9 @@ public class UserProvider {
     }
 
     //최근본 물품 조회
-    public List<GetProductRes> getUserViewed(int userIdx) throws BaseException{
+    public List<GetProductRes> getUserViewed(int userIdx, int page, int limit) throws BaseException{
         try{
-            List<GetProductRes> getProductRes = userDao.getUserViewed(userIdx);
+            List<GetProductRes> getProductRes = userDao.getUserViewed(userIdx, page, limit);
             return getProductRes;
         }
         catch (Exception exception) {

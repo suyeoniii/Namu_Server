@@ -19,11 +19,12 @@ public class UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<GetUserProductRes> getUserApply(int userIdx){
+    public List<GetUserProductRes> getUserApply(int userIdx, int page, int limit){
+        Object[] getUserParams = new Object[]{userIdx, page, limit};
         String getUsersQuery = "SELECT P.idx productIdx, imgUrl, productName, price, A.quantity, P.quantity totalCount, applyCount, deadline FROM Product P\n" +
                 "INNER JOIN Apply A ON A.productIdx=P.idx\n" +
                 "INNER JOIN (SELECT productIdx, SUM(quantity) applyCount FROM Apply WHERE status=0 GROUP BY productIdx) AP ON AP.productIdx=P.idx\n" +
-                "WHERE A.userIdx=?";
+                "WHERE A.userIdx=? limit ?,?";
         return this.jdbcTemplate.query(getUsersQuery,
                 (rs,rowNum) -> new GetUserProductRes(
                         rs.getInt("productIdx"),
@@ -33,15 +34,15 @@ public class UserDao {
                         rs.getInt("quantity"),
                         rs.getInt("totalCount"),
                         rs.getInt("applyCount"),
-                        rs.getString("deadline")), userIdx
+                        rs.getString("deadline")), getUserParams
         );
     }
     //등록물품 조회
-    public List<GetUserProductRes> getUserRegister(int userIdx){
-        Object[] getUserRegisterParams = new Object[]{userIdx,userIdx};
+    public List<GetUserProductRes> getUserRegister(int userIdx, int page, int limit){
+        Object[] getUserRegisterParams = new Object[]{userIdx,userIdx, page, limit};
         String getUsersQuery = "select P.idx productIdx, imgUrl, productName, price, A.quantity, P.quantity totalCount, ifnull(applyCount,0) applyCount, deadline from Product P\n" +
                 "left outer join (select productIdx, SUM(quantity) applyCount , case when userIdx=? then quantity else 0  end quantity from Apply group by productIdx) A on A.productIdx=P.idx\n" +
-                "where P.userIdx=? order by P.createdAt DESC";
+                "where P.userIdx=? order by P.createdAt DESC limit ?,?";
         return this.jdbcTemplate.query(getUsersQuery,
                 (rs,rowNum) -> new GetUserProductRes(
                         rs.getInt("productIdx"),
@@ -55,9 +56,10 @@ public class UserDao {
         );
     }
     //최근본물품 조회
-    public List<GetProductRes> getUserViewed(int userIdx){
+    public List<GetProductRes> getUserViewed(int userIdx, int page, int limit){
+        Object[] getUserViewedParams = new Object[]{userIdx, page, limit};
         String getUsersQuery = "select P.idx productIdx, imgUrl, productName, price, quantity, deadline from Viewed V\n" +
-                "inner join Product P on P.idx=V.productIdx where V.userIdx=? order by V.updatedAt DESC";
+                "inner join Product P on P.idx=V.productIdx where V.userIdx=? order by V.updatedAt DESC limit ?,?";
         return this.jdbcTemplate.query(getUsersQuery,
                 (rs,rowNum) -> new GetProductRes(
                         rs.getInt("productIdx"),
@@ -65,7 +67,7 @@ public class UserDao {
                         rs.getString("productName"),
                         rs.getInt("price"),
                         rs.getInt("quantity"),
-                        rs.getString("deadline")), userIdx
+                        rs.getString("deadline")), getUserViewedParams
         );
     }
 
