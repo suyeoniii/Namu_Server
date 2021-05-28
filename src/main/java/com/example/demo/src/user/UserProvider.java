@@ -96,6 +96,16 @@ public class UserProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+    //찜한 물품 조회
+    public List<GetProductRes> getUserWish(int userIdx, int page, int limit) throws BaseException{
+        try{
+            List<GetProductRes> getProductRes = userDao.getUserWish(userIdx, page, limit);
+            return getProductRes;
+        }
+        catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
     public int checkEmail(String email) throws BaseException{
         try{

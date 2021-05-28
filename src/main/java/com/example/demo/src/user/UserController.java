@@ -169,6 +169,37 @@ public class UserController {
         }
     }
 
+    /**
+     * 찜 목록 조회
+     * [GET] /users/:userIdx/wish
+     * @return BaseResponse<List<GetProductRes>>
+     */
+    //Path variable
+    @ResponseBody
+    @GetMapping("/{userIdx}/wish") // (GET) 127.0.0.1:9000/app/users
+    public BaseResponse<List<GetProductRes>> getUserViewed(@PathVariable("userIdx") int userIdx, @RequestParam(required = false, defaultValue = "1") String page,
+                                                           @RequestParam(required = false, defaultValue = "20") String limit) {
+        try {
+            if (userIdx == 0) {
+                return new BaseResponse<>(USER_USERID_EMPTY);
+            }
+
+            //페이징 기본값 설정
+            int start = Integer.parseInt(limit) * (Integer.parseInt(page) - 1);
+            Integer userIdxFromJWT = jwtService.getUserIdx();
+
+            if (userIdx != userIdxFromJWT)
+                return new BaseResponse<>(USER_USERID_NOT_MATCH);
+
+            List<GetProductRes> getUsersRes = userProvider.getUserWish(userIdx, start, Integer.parseInt(limit));
+            return new BaseResponse<>(getUsersRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+
+
 
     /**
      * 회원가입 API
