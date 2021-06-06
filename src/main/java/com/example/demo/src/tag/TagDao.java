@@ -20,9 +20,10 @@ public class TagDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    //등록물품 조회
+    //해시태그 조회
     public List<GetTagRes> selectTags(int userIdx){
-        String getTagsQuery = "";
+        String getTagsQuery = "select UT.idx tagIdx, tagName from UserTag UT inner join Tag T on T.idx=UT.tagIdx" +
+                " where UT.userIdx=? and status=0";
         return this.jdbcTemplate.query(getTagsQuery,
                 (rs,rowNum) -> new GetTagRes(
                         rs.getInt("tagIdx"),
