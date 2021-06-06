@@ -154,7 +154,7 @@ public class UserDao {
     public List<GetProductRes> getUserWish(int userIdx, int page, int limit){
         Object[] getUserWishParams = new Object[]{userIdx, page, limit};
         String getUserWishQuery = "select P.idx productIdx, imgUrl, productName, price, quantity, deadline from Wish W\n" +
-                "inner join Product P on P.idx=W.productIdx where W.userIdx=? order by W.updatedAt DESC limit ?,?";
+                "inner join Product P on P.idx=W.productIdx where W.userIdx=? and W.status=0 order by W.updatedAt DESC limit ?,?";
         return this.jdbcTemplate.query(getUserWishQuery,
                 (rs,rowNum) -> new GetProductRes(
                         rs.getInt("productIdx"),
