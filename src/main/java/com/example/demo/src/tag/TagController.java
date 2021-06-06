@@ -1,6 +1,8 @@
 package com.example.demo.src.tag;
 
 import com.example.demo.src.tag.model.GetTagRes;
+import com.example.demo.src.tag.model.PostTagReq;
+import com.example.demo.src.tag.model.PostTagRes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.demo.config.BaseException;
@@ -49,6 +51,24 @@ public class TagController {
 
             List<GetTagRes> getTagsRes = tagProvider.getTags(userIdxByJwt);
             return new BaseResponse<>(getTagsRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 해시태그 알림 등록
+     * [POST] /tags
+     * @return BaseResponse<PostTagRes>
+     */
+    @ResponseBody
+    @PostMapping("")
+    public BaseResponse<PostTagRes> postTags(@RequestBody PostTagReq postTagReq) {
+        try {
+            //jwt에서 idx 추출.
+            int userIdxByJwt = jwtService.getUserIdx();
+            PostTagRes postTagsRes = tagService.createTags(userIdxByJwt, postTagReq.getTagName());
+            return new BaseResponse<>(postTagsRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

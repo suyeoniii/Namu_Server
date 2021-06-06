@@ -42,4 +42,25 @@ public class TagProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    //태그 존재여부 체크
+    public Integer selectTagByName(String tagName) throws BaseException{
+        try{
+            Integer tagIdx = tagDao.selectTagByName(tagName);
+            return tagIdx;
+        }
+        catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //태그알림 등록 중복여부 체크
+    public int tagCheck(int userIdx, int tagIdx) throws BaseException{
+        try{
+            return tagDao.tagCheck(userIdx, tagIdx);
+        }
+        catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
