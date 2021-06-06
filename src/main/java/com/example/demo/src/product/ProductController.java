@@ -48,7 +48,7 @@ public class ProductController {
                                                                 @RequestParam(required = false, defaultValue = "20") String limit,
                                                                 @RequestParam(required = false) String[] lati,
                                                                 @RequestParam(required = false) String[] longi,
-                                                                @RequestParam(required = false, defaultValue = "0") String distance) {
+                                                                @RequestParam(required = false, defaultValue = "3") String distance) {
         // 마감임박
         try {
             //jwt에서 idx 추출.
@@ -56,7 +56,7 @@ public class ProductController {
 
             //로그인 시 사용자 위도경도 가져오기
             if(userIdx != null){
-                List<GetUserAddressRes> addressRes = productProvider.getUserAddress(userIdx);
+                //List<GetUserAddressRes> addressRes = productProvider.getUserAddress(userIdx);
             }
             //페이징 기본값 설정
             int start = Integer.parseInt(limit)*(Integer.parseInt(page)-1);

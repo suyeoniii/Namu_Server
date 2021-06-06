@@ -50,7 +50,7 @@ public class ProductDao {
                 selectImminentQuery += " AND P.userIdx != " + userIdx + "";
             }
             selectImminentQuery += " ORDER BY delay LIMIT " + page + "," + limit + ";";
-
+            System.out.println(selectImminentQuery);
             if(userIdx!=null){
                 return this.jdbcTemplate.query(selectImminentQuery,
                         (rs, rowNum) -> new GetProductListRes(
