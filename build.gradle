@@ -50,6 +50,10 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter')
     compile('org.springframework.boot:spring-boot-starter-web')
 
+    //redis
+    compile "org.springframework.boot:spring-boot-starter-data-redis"
+    compile "redis.clients:jedis:2.9.0"
+    compile "org.springframework.session:spring-session-data-redis"
 
 
 

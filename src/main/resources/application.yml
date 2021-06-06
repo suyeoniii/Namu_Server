@@ -11,3 +11,8 @@ spring:
     username: admin # 변경해주세요
     password: newpassword # 변경해주세요
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  #Redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
