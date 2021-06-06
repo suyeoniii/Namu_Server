@@ -6,6 +6,7 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.config.secret.Secret;
 import com.example.demo.src.product.model.PatchProductRes;
+import com.example.demo.src.tag.model.PatchTagRes;
 import com.example.demo.src.tag.model.PostTagRes;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.AES128;
@@ -51,6 +52,13 @@ public class TagService {
             idx = tagDao.insertTag(tagName);
             return new PostTagRes(tagDao.insertUserTag(userIdx, idx), tagName);
         }
+
+    }
+
+    //태그 삭제
+    public PatchTagRes deleteTag(int userIdx, int tagIdx) throws BaseException {
+        tagDao.deleteTag(userIdx, tagIdx);
+        return new PatchTagRes(tagIdx);
 
     }
 

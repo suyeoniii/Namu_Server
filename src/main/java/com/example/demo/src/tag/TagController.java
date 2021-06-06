@@ -1,6 +1,7 @@
 package com.example.demo.src.tag;
 
 import com.example.demo.src.tag.model.GetTagRes;
+import com.example.demo.src.tag.model.PatchTagRes;
 import com.example.demo.src.tag.model.PostTagReq;
 import com.example.demo.src.tag.model.PostTagRes;
 import org.slf4j.Logger;
@@ -69,6 +70,24 @@ public class TagController {
             int userIdxByJwt = jwtService.getUserIdx();
             PostTagRes postTagsRes = tagService.createTags(userIdxByJwt, postTagReq.getTagName());
             return new BaseResponse<>(postTagsRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 해시태그 알림 삭제
+     * [POST] /tags/tagIdx
+     * @return BaseResponse<PatchTagRes>
+     */
+    @ResponseBody
+    @PatchMapping("/{tagIdx}")
+    public BaseResponse<PatchTagRes> patchTags(@PathVariable("tagIdx") int tagIdx) {
+        try {
+            //jwt에서 idx 추출.
+            int userIdxByJwt = jwtService.getUserIdx();
+            PatchTagRes patchTagsRes = tagService.deleteTag(userIdxByJwt, tagIdx);
+            return new BaseResponse<>(patchTagsRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

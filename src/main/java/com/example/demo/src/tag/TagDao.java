@@ -80,4 +80,13 @@ public class TagDao {
                 int.class,
                 tagCheckParams);
     }
+    //해시태그 삭제
+    public int deleteTag(int userIdx, int tagIdx){
+        Object[] tagParams = new Object[]{userIdx, tagIdx};
+        String deleteTagQuery = "UPDATE UserTag SET status=1 WHERE userIdx=? AND tagIdx=? AND status=0;";
+
+        this.jdbcTemplate.update(deleteTagQuery, tagParams);
+
+        return 0;
+    }
 }
